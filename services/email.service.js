@@ -1,10 +1,10 @@
 import sgMail from "@sendgrid/mail";
-import { emailConfig } from "../config/email.config";
+import { emailConfig } from "../config/email.config.js";
 
 sgMail.setApiKey(emailConfig.sendgridApiKey);
 
 class EmailService {
-  async send(to, subject, html, retries = 0) {
+  async send(to, subject, html, type = "default", retries = 0) {
     const maxRetries = emailConfig.settings.maxRetries;
     const retryDelayMs = emailConfig.settings.retryDelay;
 
@@ -13,16 +13,15 @@ class EmailService {
       return;
     }
 
+    const fromEmail = emailConfig.from[type] || emailConfig.from.default;
+
     const msg = {
       to,
-
       from: {
         name: emailConfig.from.name,
-        email: emailConfig.from.address,
+        email: fromEmail,
       },
-
       subject,
-
       html,
     };
 
@@ -43,43 +42,86 @@ class EmailService {
   }
 
   async sendContactForm(data) {
-    const html = `
-      <h2>New Contact Form Submission</h2>
+    const html = `<div style="font-family: Arial, sans-serif; margin:0; padding:0;">
+      <div style="
+        background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 50%, #a855f7 100%);
+        color: white;
+        text-align: center;
+        padding: 40px 20px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      ">
+        <h1 style="margin:0; font-size:28px;">Glowmark Agency</h1>
+      </div>
 
-      <p><b>Name:</b> ${data.firstname} ${data.lastname}</p>
+      <!-- Body -->
+      <div style="padding: 30px 20px; text-align: center;">
+        <h2 style="color:#333; font-size:24px; margin-bottom:20px;">Hello ${data.firstName}!</h2>
+        <p style="color:#555; font-size:16px; line-height:1.6; margin-bottom:20px;">
+          Thank you for contacting Glowmark.<br>
+          We have received your message and our team will respond as soon as possible.<br><br>
+          We appreciate you reaching out and look forward to assisting you.
+        </p>
+      </div>
 
-      <p><b>Email:</b> ${data.email}</p>
+      <div style="
+        background-color: #f3f3f3;
+        color:#777;
+        text-align:center;
+        padding: 20px;
+        font-size:12px;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+      ">
+        <p>Glowmark Agency &copy; ${new Date().getFullYear()}</p>
+      </div>
+    </div>`;
 
-      <p><b>Message:</b></p>
-
-      <p>${data.message}</p>
-    `;
-
-    return this.send(
-      emailConfig.contactEmail,
-      "New Contact Form Submission",
-      html,
-    );
+    return this.send(data.email, "Thank you for reaching out", html);
+    // return this.send(data.email, "Thank you for reaching out", html, "contact");
   }
 
   async sendBoostForm(data) {
-    const html = `
-    <h2>New Boost Request</h2>
+    const html = `  
+    <div style="font-family: Arial, sans-serif; margin:0; padding:0;">
+      <div style="
+        background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 50%, #a855f7 100%);
+        color: white;
+        text-align: center;
+        padding: 40px 20px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+      ">
+        <h1 style="margin:0; font-size:28px;">Glowmark Agency</h1>
+      </div>
 
-      <p><b>Name:</b> ${data.firstname} ${data.lastname}</p>
+      <!-- Body -->
+      <div style="padding: 30px 20px; text-align: center;">
+        <h2 style="color:#333; font-size:24px; margin-bottom:20px;">Hello ${data.firstName}!</h2>
+        <p style="color:#555; font-size:16px; line-height:1.6; margin-bottom:20px;">
+          Thank you for your interest in our Boost services.<br>
+          We have received your request and our team will review it shortly.<br>
+          You can expect to hear from us very soon with the next steps.<br><br>
+          We’re excited to help you grow with Glowmark!
+        </p>
+      </div>
 
-      <p><b>Email:</b> ${data.email}</p>
+      <!-- Footer -->
+      <div style="
+        background-color: #f3f3f3;
+        color:#777;
+        text-align:center;
+        padding: 20px;
+        font-size:12px;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+      ">
+        <p>Glowmark Agency &copy; ${new Date().getFullYear()}</p>
+      </div>
+    </div>`;
 
-      <p><b>Phone:</b> ${data.phone}</p>
-
-      <p><b>Website for which we are requesting boost:</b> ${data.website}</p>
-
-      <p><b>Message:</b></p>
-
-      <p>${data.message}</p>
-    `;
-
-    return this.send(emailConfig.boostEmail, "New Boost Request", html);
+    return this.send(data.email, "Thank you for your request!", html);
+    // return this.send(data.email, "Thank you for your request!", html, "boost");
   }
 }
 

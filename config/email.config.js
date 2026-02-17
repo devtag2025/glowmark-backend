@@ -7,11 +7,10 @@ export const emailConfig = {
 
   from: {
     name: process.env.FROM_NAME,
-    address: process.env.FROM_EMAIL,
+    contact: process.env.FROM_CONTACT_EMAIL,
+    boost: process.env.FROM_REQUEST_EMAIL,
+    default: process.env.FROM_EMAIL,
   },
-
-  contactEmail: process.env.EMAIL_CONTACT_INFO,
-  boostEmail: process.env.EMAIL_REQUEST_INFO,
 
   settings: {
     maxRetries: 3,

@@ -1,4 +1,4 @@
-import { emailService } from "./../services/email.service";
+import { emailService } from "./../services/email.service.js";
 
 export const handleContactForm = async (req, res) => {
   try {
