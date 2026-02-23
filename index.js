@@ -25,6 +25,11 @@ app.get("/", (req, res) => {
   res.json("Api is running");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on PORT`, PORT);
-});
+// Only start the server when not on Vercel (serverless)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on PORT`, PORT);
+  });
+}
+
+export default app;
