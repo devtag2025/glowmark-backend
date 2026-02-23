@@ -4,7 +4,7 @@ import { emailConfig } from "../config/email.config.js";
 sgMail.setApiKey(emailConfig.sendgridApiKey);
 
 class EmailService {
-  async send(to, subject, html, type = "default", retries = 0) {
+  async send(to, subject, html, type, retries = 0) {
     const maxRetries = emailConfig.settings.maxRetries;
     const retryDelayMs = emailConfig.settings.retryDelay;
 
@@ -13,7 +13,16 @@ class EmailService {
       return;
     }
 
-    const fromEmail = emailConfig.from[type] || emailConfig.from.default;
+    const fromEmail =
+      type === "contact"
+        ? emailConfig.from.contact
+        : type === "boost"
+          ? emailConfig.from.boost
+          : emailConfig.from.contact;
+
+    if (!fromEmail) {
+      throw new Error("From email not configured");
+    }
 
     const msg = {
       to,
@@ -90,8 +99,7 @@ class EmailService {
 
     `;
 
-    return this.send(data.email, "Thank you for reaching out", html);
-    // return this.send(data.email, "Thank you for reaching out", html, "contact");
+    return this.send(data.email, "Thank you for reaching out", html, "contact");
   }
 
   async sendBoostForm(data) {
@@ -142,8 +150,7 @@ class EmailService {
 
     `;
 
-    return this.send(data.email, "Thank you for your request!", html);
-    // return this.send(data.email, "Thank you for your request!", html, "boost");
+    return this.send(data.email, "Thank you for your request!", html, "boost");
   }
 }
 

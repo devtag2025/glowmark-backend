@@ -9,7 +9,7 @@ export const emailConfig = {
     name: process.env.FROM_NAME,
     contact: process.env.FROM_CONTACT_EMAIL,
     boost: process.env.FROM_REQUEST_EMAIL,
-    default: process.env.FROM_EMAIL,
+    // default: process.env.FROM_EMAIL,
   },
 
   settings: {

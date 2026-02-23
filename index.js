@@ -2,10 +2,13 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import formRoutes from "./routes/form.route.js";
+import connectDb from "./db/connectDb.js";
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
+
+connectDb();
 
 app.use(
   cors({
